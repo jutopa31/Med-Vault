@@ -16,6 +16,16 @@ const CDP_PORT = 9355; // Puerto dedicado para medvault scrapers
 // Lanzar Chromium sin flags de automatización y conectar vía CDP
 async function launchRealChromium(pDir, url, headed = false) {
   fs.mkdirSync(pDir, { recursive: true });
+  for (const staleName of ['SingletonLock', 'SingletonSocket', 'SingletonCookie']) {
+    const stalePath = path.join(pDir, staleName);
+    try {
+      if (fs.existsSync(stalePath) || fs.lstatSync(stalePath)) {
+        fs.rmSync(stalePath, { force: true });
+      }
+    } catch {
+      // Ignorar locks huérfanos que ya no existan.
+    }
+  }
 
   const hasDisplay = !!process.env.DISPLAY || !!process.env.WAYLAND_DISPLAY;
   const useHeadless = !headed || !hasDisplay;
@@ -26,8 +36,9 @@ async function launchRealChromium(pDir, url, headed = false) {
     '--no-first-run',
     '--no-default-browser-check',
     '--disable-sync',
+    '--disable-gpu',
     ...(useHeadless ? ['--headless=new'] : []),
-    url,
+    'about:blank',
   ], { detached: false, stdio: 'ignore' });
 
   proc.unref();
@@ -455,7 +466,7 @@ async function runPortalScraper(config) {
   }
 
   // Navegar al portal
-  await page.goto(finalUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.goto(finalUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
 
   let patients = [];
 
@@ -554,4 +565,19 @@ async function runPortalScraper(config) {
   }
 }
 
-module.exports = { runPortalScraper };
+module.exports = {
+  doLogin,
+  formatDateDMY,
+  formatScrapedAt,
+  isLoginPage,
+  launchRealChromium,
+  loadEnv,
+  loadSession,
+  nextWeekday,
+  profileDir,
+  runConfiguredSteps,
+  runPortalScraper,
+  saveSession,
+  selectorConfig,
+  sessionFilePath,
+};

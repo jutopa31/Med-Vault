@@ -21,3 +21,13 @@ scripts/node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# Datos de pacientes — NUNCA commitear
+agenda/consultorios/**/*_confirmaciones.md
+agenda/consultorios/**/_debug/
+scripts/state/
+
+# Datos de pacientes — NUNCA commitear
+agenda/consultorios/**/*_confirmaciones.md
+agenda/consultorios/**/_debug/
+scripts/state/

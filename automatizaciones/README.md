@@ -15,9 +15,18 @@ Carpetas:
 Flujo recomendado:
 
 1. `scrape-ospedyc.js` genera agenda del dia.
-2. `scrape-ospedyc-paciente.js` descarga HCE por paciente.
-3. `normalize-patient-history.js` consolida historia.
-4. `generate-patient-summary-claude.js` genera resumen y borrador.
+2. `watch-ospedyc-confirmations.js` vigila cambios de estado en la lista.
+3. `scrape-ospedyc-paciente.js` descarga HCE por paciente.
+4. `normalize-patient-history.js` consolida historia.
+5. `generate-patient-summary-claude.js` genera resumen y borrador.
+
+Watcher OSPEDYC:
+
+- Comando: `node /home/jutopa/MedVault/scripts/watch-ospedyc-confirmations.js`
+- Wrapper cron: `/home/jutopa/MedVault/scripts/run-ospedyc-confirmations-cron.sh`
+- Estado persistido: `scripts/state/ospedyc-confirmations-YYYY-MM-DD.json`
+- Reporte: `agenda/consultorios/ospedyc/YYYY-MM-DD_confirmaciones.md`
+- Prioridad de notificacion: `openclaw message send` a Telegram usando `OSPEDYC_NOTIFY_TELEGRAM_ACCOUNT` y `OSPEDYC_NOTIFY_TELEGRAM_TARGET`; si eso no existe, usa `OSPEDYC_NOTIFY_TELEGRAM_BOT_TOKEN` y `OSPEDYC_NOTIFY_TELEGRAM_CHAT_ID`.
 
 Todos los pasos deben escribir archivos dentro del vault.
 
